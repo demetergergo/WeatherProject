@@ -1,10 +1,13 @@
 package com.techmania.weatherproject.domain
 
+import java.time.LocalDateTime
+
 data class WeatherInfo (
-    private val time: String,
+    val time: LocalDateTime,
     val temperature: Double,
     val apparentTemperature: Double,
     val precipitation: Double,
-    val weatherCode: Int,
+    val weatherDesc: String,
+    val iconRes: Int,
     val windSpeed: Double,
 )

@@ -1,7 +1,10 @@
-package com.techmania.weatherproject.usecases
+package com.techmania.weatherproject.domain.usecases
 
 import com.techmania.weatherproject.data.networking.OpenMeteoApi
 import com.techmania.weatherproject.domain.WeatherInfo
+import com.techmania.weatherproject.domain.WeatherType
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class FetchWeatherInfoUseCase @Inject constructor(
@@ -18,11 +21,12 @@ class FetchWeatherInfoUseCase @Inject constructor(
             for (i in weatherData.hourly.time.indices) {
                 weatherInfoList.add(
                     WeatherInfo(
-                        time = hourly.time[i],
+                        time = DateTimeFormatter.ISO_DATE_TIME.parse(hourly.time[i], LocalDateTime::from),
                         temperature = hourly.temperature_2m[i],
                         apparentTemperature = hourly.apparent_temperature[i],
                         precipitation = hourly.precipitation[i],
-                        weatherCode = hourly.weather_code[i],
+                        weatherDesc = WeatherType.fromWMO(hourly.weather_code[i]).weatherDesc,
+                        iconRes= WeatherType.fromWMO(hourly.weather_code[i]).iconRes,
                         windSpeed = hourly.wind_speed_10m[i]
                     )
                 )
