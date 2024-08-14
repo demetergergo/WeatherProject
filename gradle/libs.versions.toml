@@ -14,6 +14,7 @@ moshi = "1.14.0"
 retrofit-logging-interceptor = "4.12.0"
 hilt = "2.51.1"
 hilt-navigation-compose = "1.2.0"
+playServicesLocation = "21.3.0"
 
 
 [libraries]
@@ -39,6 +40,7 @@ retrofit-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,8 @@
 package com.techmania.weatherproject.Common.dependencyInjection
 
+import android.app.Application
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.techmania.weatherproject.Common.Constants
 import com.techmania.weatherproject.data.networking.OpenMeteoApi
 import dagger.Module
@@ -32,17 +35,10 @@ class ApplicationModule{
     fun openMeteoApi(retrofit: Retrofit): OpenMeteoApi {
         return retrofit.create(OpenMeteoApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun FusedLocationProviderClient(app: Application): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(app)
+    }
 }
-
-
-
-//                    retrofit()
-//                    LaunchedEffect(Unit) {
-//                        var weatherData = openMeteoApi(retrofit()).getWeatherData(
-//                            47.1, 19.1
-//                        )
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            weatherData?.hourly?.temperature_2m?.getOrNull(0).toString() ?: "",
-//                            Toast.LENGTH_LONG
-//                        ).show()
