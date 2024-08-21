@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.domain.usecases
+package com.techmania.weatherproject.usecases
 
 import com.techmania.weatherproject.data.permissions.location.LocationTracker
 import com.techmania.weatherproject.domain.models.LocationInfo

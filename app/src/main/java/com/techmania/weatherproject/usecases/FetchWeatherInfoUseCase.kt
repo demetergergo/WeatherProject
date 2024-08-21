@@ -1,8 +1,7 @@
-package com.techmania.weatherproject.domain.usecases
+package com.techmania.weatherproject.usecases
 
 import com.techmania.weatherproject.data.networking.OpenMeteoApi
 import com.techmania.weatherproject.domain.models.WeatherInfo
-import com.techmania.weatherproject.domain.models.WeatherType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject

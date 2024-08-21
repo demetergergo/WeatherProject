@@ -20,6 +20,7 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
         val weatherInfoLatest = mainScreenViewModel.weatherInfoAll.collectAsState()
         val weatherInfoToday = mainScreenViewModel.weatherInfoToday.collectAsState()
         val weatherInfoTomorrow = mainScreenViewModel.weatherInfoTomorrow.collectAsState()
+        val weatherInfoThisHour = mainScreenViewModel.weatherInfoThisHour.collectAsState()
 
         LaunchedEffect(Unit) {
             mainScreenViewModel.fetchWeatherInfo()
