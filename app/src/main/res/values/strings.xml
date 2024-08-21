@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Weather Project</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="next7days">Next 7 Days</string>
 </resources>
