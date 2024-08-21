@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,7 +29,7 @@ class DefaultLocationTracker @Inject constructor(
             locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.GPS_PROVIDER
             )
-        if (!hasAccessFineLocationPermission || !hasAccessCoarseLocationPermission || isGpsdEnabled) {
+        if (!hasAccessFineLocationPermission || !hasAccessCoarseLocationPermission || !isGpsdEnabled) {
             return null
         }
 

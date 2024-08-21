@@ -1,9 +1,9 @@
-package com.techmania.weatherproject.Common.dependencyInjection
+package com.techmania.weatherproject.common.dependencyInjection
 
 import android.app.Application
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.techmania.weatherproject.Common.Constants
+import com.techmania.weatherproject.common.Constants
 import com.techmania.weatherproject.data.networking.OpenMeteoApi
 import dagger.Module
 import dagger.Provides

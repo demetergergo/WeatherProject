@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.domain
+package com.techmania.weatherproject.domain.models
 
 import java.time.LocalDateTime
 
