@@ -1,5 +1,6 @@
 package com.techmania.weatherproject.presentation.mainScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -9,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
 import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.SmallCardByDayRow
 
 //for testing
@@ -20,7 +22,7 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
         val weatherInfoLatest = mainScreenViewModel.weatherInfoAll.collectAsState()
         val weatherInfoToday = mainScreenViewModel.weatherInfoToday.collectAsState()
         val weatherInfoTomorrow = mainScreenViewModel.weatherInfoTomorrow.collectAsState()
-        val weatherInfoThisHour = mainScreenViewModel.weatherInfoThisHour.collectAsState()
+        val weatherInfoCurrent = mainScreenViewModel.weatherInfoCurrent.collectAsState()
 
         LaunchedEffect(Unit) {
             mainScreenViewModel.fetchWeatherInfo()

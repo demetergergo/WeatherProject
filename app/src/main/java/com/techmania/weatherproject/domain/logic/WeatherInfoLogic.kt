@@ -5,20 +5,11 @@ import java.time.LocalDateTime
 
 object WeatherInfoLogic {
     fun observeWeatherInfoByDay(
-        weatherInfoList: List<WeatherInfo>,
+        weatherInfoSpecificList: List<WeatherInfo>,
         intendedDate: LocalDateTime,
     ): List<WeatherInfo> {
-        return weatherInfoList.filter { weatherInfo ->
+        return weatherInfoSpecificList.filter { weatherInfo ->
             weatherInfo.time.dayOfMonth == intendedDate.dayOfMonth
         }
-    }
-
-    fun observeWeatherInfoByHour(
-        weatherInfoList: List<WeatherInfo>,
-        intendedDate: LocalDateTime,
-    ): WeatherInfo{
-        return weatherInfoList.find { weatherInfo ->
-            weatherInfo.time.dayOfMonth == intendedDate.dayOfMonth && weatherInfo.time.hour == intendedDate.hour
-        }!!
     }
 }

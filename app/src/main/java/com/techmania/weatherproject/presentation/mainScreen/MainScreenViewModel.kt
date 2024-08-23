@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
 import com.techmania.weatherproject.domain.models.WeatherInfo
+import com.techmania.weatherproject.domain.models.WeatherInfoList
 import com.techmania.weatherproject.usecases.FetchWeatherInfoUseCase
 import com.techmania.weatherproject.usecases.ObserveLocationInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,32 +17,31 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val fetchWeatherInfoUseCase: FetchWeatherInfoUseCase,
-    private val observeLocationInfoUseCase: ObserveLocationInfoUseCase
-): ViewModel() {
+    private val observeLocationInfoUseCase: ObserveLocationInfoUseCase,
+) : ViewModel() {
 
-    val weatherInfoAll = MutableStateFlow<List<WeatherInfo>>(emptyList())
-
-    val weatherInfoThisHour = MutableStateFlow<WeatherInfo?>(null)
-
+    val weatherInfoAll = MutableStateFlow<WeatherInfoList?>(null)
+    val weatherInfoCurrent = MutableStateFlow<WeatherInfo?>(null)
     val weatherInfoToday = MutableStateFlow<List<WeatherInfo>>(emptyList())
     val weatherInfoTomorrow = MutableStateFlow<List<WeatherInfo>>(emptyList())
+    val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
 
-    suspend fun fetchWeatherInfo(){
+    suspend fun fetchWeatherInfo() {
         viewModelScope.launch {
-            val locationInfo = observeLocationInfoUseCase()
-            Log.d("locationInfo", locationInfo!!.latitude.toString())
-            Log.d("locationInfo", locationInfo!!.longitude.toString())
+            try{
+                val locationInfo = observeLocationInfoUseCase()
+                weatherInfoAll.value = fetchWeatherInfoUseCase(locationInfo!!.latitude, locationInfo.longitude)
+            } catch (e: Exception) {
+                Log.d("weatherException", e.message.toString())
+            }
+        }.invokeOnCompletion {
+            weatherInfoAll.value?.let{ weatherData ->
 
-            weatherInfoAll.value = fetchWeatherInfoUseCase(locationInfo!!.latitude, locationInfo!!.longitude)
-            weatherInfoToday.value = observeWeatherInfoByDay(LocalDateTime.now())
-            weatherInfoTomorrow.value = observeWeatherInfoByDay(LocalDateTime.now().plusDays(1))
-            weatherInfoThisHour.value = WeatherInfoLogic.observeWeatherInfoByHour(weatherInfoAll.value ,LocalDateTime.now())
-            Log.d("weatherInfoThisHour", weatherInfoThisHour.value.toString())
-
+                weatherInfoToday.value = WeatherInfoLogic.observeWeatherInfoByDay(weatherData.hourly, LocalDateTime.now())
+                weatherInfoTomorrow.value = WeatherInfoLogic.observeWeatherInfoByDay(weatherData.hourly, LocalDateTime.now().plusDays(1))
+                weatherInfoCurrent.value = weatherData.current
+                weatherInfoDaily.value = weatherData.daily
+            }
         }
-    }
-
-    private fun observeWeatherInfoByDay(intendedDate: LocalDateTime): List<WeatherInfo> {
-        return WeatherInfoLogic.observeWeatherInfoByDay(weatherInfoAll.value, intendedDate)
     }
 }
