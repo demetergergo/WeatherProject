@@ -3,4 +3,15 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="next7days">Next 7 Days</string>
+
+    <string name="rainfall">Rainfall</string>
+    <string name="wind">Wind</string>
+    <string name="apparent_temperature">Feels like</string>
+
+    <string name="unit_cm">cm</string>
+    <string name="unit_kmh">Km/h</string>
+    <string name="unit_percentage">%</string>
+    <string name="unit_celsius">°C</string>
+
+    <string name="loading">…</string>
 </resources>

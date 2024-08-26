@@ -1,6 +1,7 @@
 package com.techmania.weatherproject.presentation.mainScreen
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
@@ -26,6 +27,9 @@ class MainScreenViewModel @Inject constructor(
     val weatherInfoTomorrow = MutableStateFlow<List<WeatherInfo>>(emptyList())
     val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
 
+    val smallCardState = MutableStateFlow(LazyListState())
+    val selectedWeatherInfoState = MutableStateFlow<WeatherInfo?>(null)
+
     suspend fun fetchWeatherInfo() {
         viewModelScope.launch {
             try{
@@ -41,7 +45,12 @@ class MainScreenViewModel @Inject constructor(
                 weatherInfoTomorrow.value = WeatherInfoLogic.observeWeatherInfoByDay(weatherData.hourly, LocalDateTime.now().plusDays(1))
                 weatherInfoCurrent.value = weatherData.current
                 weatherInfoDaily.value = weatherData.daily
+                selectedWeatherInfoState.value = weatherData.current
             }
         }
+    }
+
+    fun updateSelectedWeatherInfo(weatherInfo: WeatherInfo){
+        selectedWeatherInfoState.value = weatherInfo
     }
 }
