@@ -8,6 +8,8 @@
     <string name="wind">Wind</string>
     <string name="apparent_temperature">Feels like</string>
 
+    <string name="current_time">Current time</string>
+
     <string name="unit_cm">cm</string>
     <string name="unit_kmh">Km/h</string>
     <string name="unit_percentage">%</string>

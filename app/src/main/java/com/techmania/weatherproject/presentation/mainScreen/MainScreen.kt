@@ -13,16 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.techmania.weatherproject.R
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
-import com.techmania.weatherproject.domain.logic.WeatherInfoLogic.getWeatherInfoIndexFromList
 import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.BigCurrentInfo
 import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.ClimateInfoCard
 import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.SmallCardByDayRow
+import kotlinx.coroutines.launch
 
 //for testing
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,22 +32,17 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        val weatherInfoToday = mainScreenViewModel.weatherInfoToday.collectAsState()
-        val weatherInfoCurrent = mainScreenViewModel.weatherInfoCurrent.collectAsState()
-        val weatherInfoListToDisplay = mainScreenViewModel.weatherInfoListToDisplay.collectAsState()
+        val coroutineScope = rememberCoroutineScope()
 
+        val selectedBarState = mainScreenViewModel.selectedBarState.collectAsState()
+        val weatherInfoListToDisplay = mainScreenViewModel.weatherInfoListToDisplay.collectAsState()
+        val smallCardState = mainScreenViewModel.smallCardState.collectAsState()
 
         LaunchedEffect(Unit) {
             mainScreenViewModel.fetchWeatherInfo()
         }
-        LaunchedEffect(weatherInfoToday.value) {
-            if (mainScreenViewModel.selectedWeatherInfoState != null) {
-                mainScreenViewModel.smallCardState.scrollToItem(
-                    getWeatherInfoIndexFromList(
-                        weatherInfoToday.value, mainScreenViewModel.selectedWeatherInfoState!!.time
-                    )
-                )
-            }
+        LaunchedEffect(weatherInfoListToDisplay.value) {
+            mainScreenViewModel.scrollToSelectedWeatherInfo()
         }
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -62,6 +58,14 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                     //TODO: get location name
                     city = "Budapest",
                     country = "Hungary",
+                    chipText = R.string.current_time,
+                    toggleChipOnClick = {
+                        mainScreenViewModel.resetSelectedWeatherInfo()
+                        coroutineScope.launch{
+                            mainScreenViewModel.scrollToSelectedWeatherInfo()
+                        }
+                    },
+                    toggleChipOnSelected = mainScreenViewModel.toggleChipState,
                     modifier = Modifier.padding(20.dp)
                 )
                 Column(
@@ -90,28 +94,23 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                         R.string.unit_celsius
                     )
                 }
-                
-                SecondaryTabRow(selectedTabIndex = mainScreenViewModel.selectedBarState) {
-                    Tab(
-                        selected = mainScreenViewModel.selectedBarState == 0,
+
+                SecondaryTabRow(modifier = Modifier.padding(bottom = 0.dp),selectedTabIndex = selectedBarState.value) {
+                    Tab(selected = selectedBarState.value == 0,
                         onClick = { mainScreenViewModel.updateSelectedBarState(0) },
-                        text = { Text(text = "Today")}
-                    )
-                    Tab(
-                        selected = mainScreenViewModel.selectedBarState == 1,
+                        text = { Text(text = "Today") })
+                    Tab(selected = selectedBarState.value == 1,
                         onClick = { mainScreenViewModel.updateSelectedBarState(1) },
-                        text = { Text(text = "Tomorrow")}
-                    )
+                        text = { Text(text = "Tomorrow") })
                 }
-                
                 SmallCardByDayRow(
                     weatherInfoList = weatherInfoListToDisplay.value,
                     onClickCard = { weatherInfo ->
                         mainScreenViewModel.updateSelectedWeatherInfo(weatherInfo)
                     },
-                    padding = innerPadding,
-                    state = mainScreenViewModel.smallCardState,
-                    selectedCard = mainScreenViewModel.selectedWeatherInfoState ?: WeatherInfoLogic.LoadingWeatherInfo
+                    state = smallCardState.value,
+                    selectedCard = mainScreenViewModel.selectedWeatherInfoState
+                        ?: WeatherInfoLogic.LoadingWeatherInfo
                 )
             }
         }

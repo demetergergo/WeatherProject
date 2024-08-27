@@ -2,11 +2,8 @@ package com.techmania.weatherproject.presentation.mainScreen.mainScreenComponent
 
 
 import androidx.compose.foundation.Image
-
 import androidx.compose.foundation.layout.Arrangement
-
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,13 +32,11 @@ import java.time.format.DateTimeFormatter
 fun SmallCardByDayRow(
     weatherInfoList: List<WeatherInfo>,
     onClickCard: (WeatherInfo) -> Unit,
-    padding: PaddingValues,
     state: LazyListState = rememberLazyListState(),
     selectedCard: WeatherInfo?
 ){
     LazyRow(
-        modifier = Modifier.fillMaxWidth()
-            .padding(padding),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         state = state
