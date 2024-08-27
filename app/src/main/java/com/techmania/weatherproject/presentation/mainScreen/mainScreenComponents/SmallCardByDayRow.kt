@@ -37,7 +37,8 @@ fun SmallCardByDayRow(
     weatherInfoList: List<WeatherInfo>,
     onClickCard: (WeatherInfo) -> Unit,
     padding: PaddingValues,
-    state : LazyListState = rememberLazyListState()
+    state: LazyListState = rememberLazyListState(),
+    selectedCard: WeatherInfo?
 ){
     LazyRow(
         modifier = Modifier.fillMaxWidth()
@@ -52,29 +53,30 @@ fun SmallCardByDayRow(
                 temperature = weatherInfoSpecific.temperature,
                 icon = painterResource(weatherInfoSpecific.iconRes),
                 time = DateTimeFormatter.ofPattern("HH:mm").format(weatherInfoSpecific.time),
-                onClickCard =  {onClickCard(weatherInfoSpecific)}
+                onClickCard =  {onClickCard(weatherInfoSpecific)},
+                cardColor = if(selectedCard?.time?.hour == weatherInfoSpecific.time.hour && selectedCard.time.dayOfMonth == weatherInfoSpecific.time.dayOfMonth) Color.DarkGray else Color.Transparent
             )
         }
     }
 }
 
 @Composable
-fun SmallCard(temperature: Double, icon: Painter, time: String, onClickCard: () -> Unit, modifier: Modifier = Modifier) {
+fun SmallCard(temperature: Double, icon: Painter, time: String, onClickCard: () -> Unit, cardColor : Color, modifier: Modifier = Modifier) {
     Card(
         modifier = Modifier
-            .height(110.dp)
+            .height(120.dp)
             .width(65.dp)
             .padding(5.dp)
         ,shape = RoundedCornerShape(50.dp),
-        colors = CardDefaults.cardColors(Color.Transparent),
+        colors = CardDefaults.cardColors(cardColor),
         onClick = onClickCard
     ) {
         Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment= Alignment.CenterHorizontally){
-                Text(time, textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
+                Text(time, textAlign = TextAlign.Center, modifier = Modifier.weight(1f).padding(top = 8.dp))
                 Image(icon, contentDescription = "icon", modifier = Modifier.weight(1.5f))
-                Text("$temperature°C", textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
+                Text("$temperature°", textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -83,5 +85,5 @@ fun SmallCard(temperature: Double, icon: Painter, time: String, onClickCard: () 
 @Preview(showBackground = false)
 @Composable
 fun TemperatureIconTimeCardSmallPreview() {
-    SmallCard(temperature = -18.0, icon = painterResource(R.drawable.sunny), time = "12:13", {})
+    SmallCard(temperature = -18.0, icon = painterResource(R.drawable.sunny), time = "12:13", {}, cardColor = Color.Transparent)
 }
