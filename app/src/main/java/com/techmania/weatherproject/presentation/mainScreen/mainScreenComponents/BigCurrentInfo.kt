@@ -77,11 +77,12 @@ fun BigCurrentInfo(
             shadowColor = Color.DarkGray,
             modifier = Modifier.size(150.dp)
         )
+        Spacer(modifier = Modifier.weight(1f))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Row() {
+            Row(modifier = Modifier) {
                 Text(text = weatherInfoCurrent.temperature.toString(), fontSize = 60.sp)
                 Column(
                     verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
@@ -91,5 +92,6 @@ fun BigCurrentInfo(
             }
             Text(text = stringResource(id = weatherInfoCurrent.weatherDesc), fontSize = 25.sp)
         }
+        Spacer(modifier = Modifier.weight(1.7f))
     }
 }

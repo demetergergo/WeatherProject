@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.retrofit.moshi.converter)
     implementation(libs.retrofit.logging.interceptor)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.compose.material)
     ksp(libs.moshi.codegen)
 
     //di
@@ -74,7 +75,11 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

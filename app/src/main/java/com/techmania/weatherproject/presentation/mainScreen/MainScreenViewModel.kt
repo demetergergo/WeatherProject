@@ -2,9 +2,6 @@ package com.techmania.weatherproject.presentation.mainScreen
 
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
@@ -28,18 +25,19 @@ class MainScreenViewModel @Inject constructor(
     private val observeLocationInfoUseCase: ObserveLocationInfoUseCase,
 ) : ViewModel() {
 
-    val weatherInfoAll = MutableStateFlow<WeatherInfoList?>(null)
-    val weatherInfoCurrent = MutableStateFlow<WeatherInfo?>(null)
-    val weatherInfoToday = MutableStateFlow<List<WeatherInfo>>(emptyList())
+    private val weatherInfoAll = MutableStateFlow<WeatherInfoList?>(null)
+    private val weatherInfoCurrent = MutableStateFlow<WeatherInfo?>(null)
+    private val weatherInfoToday = MutableStateFlow<List<WeatherInfo>>(emptyList())
     private val weatherInfoTomorrow = MutableStateFlow<List<WeatherInfo>>(emptyList())
-    val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
+    private val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
 
     var selectedBarState = MutableStateFlow<Int>(0)
-    var smallCardState = MutableStateFlow<LazyListState>(LazyListState())
-
-    var selectedWeatherInfoState by mutableStateOf(null as WeatherInfo?)
         private set
-    var toggleChipState by mutableStateOf(true)
+    var smallCardState = MutableStateFlow<LazyListState>(LazyListState())
+        private set
+    var selectedWeatherInfoState = MutableStateFlow<WeatherInfo?>(null)
+        private set
+    var selectedIsCurrentState = MutableStateFlow<Boolean>(true)
         private set
 
     var weatherInfoListToDisplay = combine(
@@ -53,7 +51,17 @@ class MainScreenViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
         private set
 
-    suspend fun fetchWeatherInfo() {
+    init {
+        viewModelScope.launch {
+            fetchWeatherInfo()
+        }.invokeOnCompletion {
+            viewModelScope.launch {
+                scrollToSelectedWeatherInfo()
+            }
+        }
+    }
+
+    private suspend fun fetchWeatherInfo() {
         viewModelScope.launch {
             try {
                 val locationInfo = observeLocationInfoUseCase()
@@ -72,20 +80,20 @@ class MainScreenViewModel @Inject constructor(
                 )
                 weatherInfoCurrent.value = weatherData.current
                 weatherInfoDaily.value = weatherData.daily
-                selectedWeatherInfoState = weatherData.current
+                selectedWeatherInfoState.value = weatherData.current
             }
         }
     }
 
     fun updateSelectedWeatherInfo(weatherInfo: WeatherInfo) {
-        selectedWeatherInfoState = weatherInfo
-        updateToggleChipState(weatherInfoCurrent.value == selectedWeatherInfoState)
+        selectedWeatherInfoState.value = weatherInfo
+        updateToggleChipState(weatherInfoCurrent.value == selectedWeatherInfoState.value)
     }
 
     fun resetSelectedWeatherInfo() {
-        selectedWeatherInfoState = weatherInfoCurrent.value
+        selectedWeatherInfoState.value = weatherInfoCurrent.value
         selectedBarState.value = 0
-        updateToggleChipState(weatherInfoCurrent.value == selectedWeatherInfoState)
+        updateToggleChipState(weatherInfoCurrent.value == selectedWeatherInfoState.value)
     }
 
     fun updateSelectedBarState(state: Int) {
@@ -93,16 +101,16 @@ class MainScreenViewModel @Inject constructor(
     }
 
     suspend fun scrollToSelectedWeatherInfo(){
-         if (selectedWeatherInfoState != null){
+         if (selectedWeatherInfoState.value != null){
              smallCardState.value.scrollToItem(
                 getWeatherInfoIndexFromList(
-                    weatherInfoListToDisplay.value, selectedWeatherInfoState!!.time
+                    weatherInfoListToDisplay.value, selectedWeatherInfoState.value!!.time
                 )
             )
         }
     }
 
     private fun updateToggleChipState(active: Boolean){
-        toggleChipState = active
+        selectedIsCurrentState.value = active
     }
 }

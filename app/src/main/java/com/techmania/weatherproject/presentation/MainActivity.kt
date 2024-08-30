@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.techmania.weatherproject.presentation.mainScreen.MainScreen
+import androidx.navigation.compose.rememberNavController
+import com.techmania.weatherproject.presentation.navigation.SetupNavGraph
 import com.techmania.weatherproject.presentation.ui.theme.WeatherProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WeatherProjectTheme(dynamicColor = false) {
-                    MainScreen()
+                val navController = rememberNavController()
+                SetupNavGraph(navController = navController)
             }
         }
     }

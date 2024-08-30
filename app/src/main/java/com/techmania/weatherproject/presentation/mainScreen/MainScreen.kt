@@ -4,18 +4,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.techmania.weatherproject.R
@@ -28,7 +32,7 @@ import kotlinx.coroutines.launch
 //for testing
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
+fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), onNextSevenDaysClicked: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -36,11 +40,10 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
 
         val selectedBarState = mainScreenViewModel.selectedBarState.collectAsState()
         val weatherInfoListToDisplay = mainScreenViewModel.weatherInfoListToDisplay.collectAsState()
+        val selectedWeatherInfoState = mainScreenViewModel.selectedWeatherInfoState.collectAsState()
+        val chipState = mainScreenViewModel.selectedIsCurrentState.collectAsState()
         val smallCardState = mainScreenViewModel.smallCardState.collectAsState()
 
-        LaunchedEffect(Unit) {
-            mainScreenViewModel.fetchWeatherInfo()
-        }
         LaunchedEffect(weatherInfoListToDisplay.value) {
             mainScreenViewModel.scrollToSelectedWeatherInfo()
         }
@@ -53,7 +56,7 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                     .padding(innerPadding)
             ) {
                 BigCurrentInfo(
-                    weatherInfoCurrent = mainScreenViewModel.selectedWeatherInfoState
+                    weatherInfoCurrent = selectedWeatherInfoState.value
                         ?: WeatherInfoLogic.LoadingWeatherInfo,
                     //TODO: get location name
                     city = "Budapest",
@@ -65,8 +68,8 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                             mainScreenViewModel.scrollToSelectedWeatherInfo()
                         }
                     },
-                    toggleChipOnSelected = mainScreenViewModel.toggleChipState,
-                    modifier = Modifier.padding(20.dp)
+                    toggleChipOnSelected = chipState.value,
+                    modifier = Modifier.padding(horizontal = 30.dp)
                 )
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -75,33 +78,36 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                     ClimateInfoCard(
                         R.drawable.rainy,
                         R.string.rainfall,
-                        mainScreenViewModel.selectedWeatherInfoState?.precipitation
+                        selectedWeatherInfoState.value?.precipitation
                             ?: WeatherInfoLogic.LoadingWeatherInfo.precipitation,
                         R.string.unit_cm
                     )
                     ClimateInfoCard(
                         R.drawable.wind_direction,
                         R.string.wind,
-                        mainScreenViewModel.selectedWeatherInfoState?.windSpeed
+                        selectedWeatherInfoState.value?.windSpeed
                             ?: WeatherInfoLogic.LoadingWeatherInfo.windSpeed,
                         R.string.unit_kmh
                     )
                     ClimateInfoCard(
                         R.drawable.sunset,
                         R.string.apparent_temperature,
-                        mainScreenViewModel.selectedWeatherInfoState?.apparentTemperature
+                        selectedWeatherInfoState.value?.apparentTemperature
                             ?: WeatherInfoLogic.LoadingWeatherInfo.apparentTemperature,
                         R.string.unit_celsius
                     )
                 }
-
-                SecondaryTabRow(modifier = Modifier.padding(bottom = 0.dp),selectedTabIndex = selectedBarState.value) {
+                SecondaryTabRow(selectedTabIndex = selectedBarState.value, modifier = Modifier) {
                     Tab(selected = selectedBarState.value == 0,
                         onClick = { mainScreenViewModel.updateSelectedBarState(0) },
                         text = { Text(text = "Today") })
                     Tab(selected = selectedBarState.value == 1,
                         onClick = { mainScreenViewModel.updateSelectedBarState(1) },
                         text = { Text(text = "Tomorrow") })
+                    TextButton(onClick = onNextSevenDaysClicked) {
+                        Text(text = stringResource(id = R.string.next7days))
+                        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                    }
                 }
                 SmallCardByDayRow(
                     weatherInfoList = weatherInfoListToDisplay.value,
@@ -109,16 +115,10 @@ fun MainScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
                         mainScreenViewModel.updateSelectedWeatherInfo(weatherInfo)
                     },
                     state = smallCardState.value,
-                    selectedCard = mainScreenViewModel.selectedWeatherInfoState
+                    selectedCard = selectedWeatherInfoState.value
                         ?: WeatherInfoLogic.LoadingWeatherInfo
                 )
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
 }

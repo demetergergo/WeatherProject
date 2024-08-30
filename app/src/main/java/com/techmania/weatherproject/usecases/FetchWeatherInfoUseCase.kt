@@ -1,6 +1,5 @@
 package com.techmania.weatherproject.usecases
 
-import android.util.Log
 import com.techmania.weatherproject.data.networking.Dto.IWeatherInfoDto
 import com.techmania.weatherproject.data.networking.Dto.WeatherInfoCurrentDto
 import com.techmania.weatherproject.data.networking.Dto.WeatherInfoDto
@@ -44,7 +43,6 @@ class FetchWeatherInfoUseCase @Inject constructor(
                             DateTimeFormatter.ISO_DATE_TIME.parse(dto.time[i], LocalDateTime::from)
                         } else{
                             //ugly, but works
-                            val asd = DateTimeFormatter.ISO_DATE_TIME.parse("${dto.time[i]}T00:00", LocalDateTime::from)
                             DateTimeFormatter.ISO_DATE_TIME.parse("${dto.time[i]}T00:00", LocalDateTime::from)
                         },
                         temperature = dto.temperature_2m[i],
