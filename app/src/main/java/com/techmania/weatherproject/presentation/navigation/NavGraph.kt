@@ -17,7 +17,7 @@ fun SetupNavGraph(navController: NavHostController) {
             })
         }
         composable(route = Screen.ForecastOverview.route){
-            ForecastOverViewScreen()
+            ForecastOverViewScreen(onBackClicked = {navController.popBackStack()})
         }
     }
 }

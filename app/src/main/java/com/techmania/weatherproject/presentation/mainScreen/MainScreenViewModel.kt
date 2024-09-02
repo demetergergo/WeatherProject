@@ -52,6 +52,10 @@ class MainScreenViewModel @Inject constructor(
         private set
 
     init {
+        fetchWeatherAndScroll()
+    }
+
+    fun fetchWeatherAndScroll() {
         viewModelScope.launch {
             fetchWeatherInfo()
         }.invokeOnCompletion {
@@ -100,9 +104,9 @@ class MainScreenViewModel @Inject constructor(
         selectedBarState.value = state
     }
 
-    suspend fun scrollToSelectedWeatherInfo(){
-         if (selectedWeatherInfoState.value != null){
-             smallCardState.value.scrollToItem(
+    suspend fun scrollToSelectedWeatherInfo() {
+        if (selectedWeatherInfoState.value != null) {
+            smallCardState.value.scrollToItem(
                 getWeatherInfoIndexFromList(
                     weatherInfoListToDisplay.value, selectedWeatherInfoState.value!!.time
                 )
@@ -110,7 +114,7 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateToggleChipState(active: Boolean){
+    private fun updateToggleChipState(active: Boolean) {
         selectedIsCurrentState.value = active
     }
 }

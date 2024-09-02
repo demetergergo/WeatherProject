@@ -29,9 +29,10 @@ class DefaultLocationTracker @Inject constructor(
             locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.GPS_PROVIDER
             )
-        if (!hasAccessFineLocationPermission || !hasAccessCoarseLocationPermission || !isGpsdEnabled) {
+        if ((!hasAccessFineLocationPermission && !hasAccessCoarseLocationPermission) || !isGpsdEnabled) {
             return null
         }
+
 
         return suspendCancellableCoroutine { cont ->
             locationClient.lastLocation.apply{

@@ -78,6 +78,10 @@ dependencies {
     //navigation
     implementation(libs.androidx.navigation.compose)
 
+    //permission
+    implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.fragment.ktx)
+
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
