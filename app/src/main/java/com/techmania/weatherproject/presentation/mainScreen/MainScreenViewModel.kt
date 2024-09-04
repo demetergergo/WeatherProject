@@ -1,13 +1,19 @@
 package com.techmania.weatherproject.presentation.mainScreen
 
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic.getWeatherInfoIndexFromList
+import com.techmania.weatherproject.domain.models.LocationInfo
+import com.techmania.weatherproject.domain.models.LocationNameInfo
 import com.techmania.weatherproject.domain.models.WeatherInfo
 import com.techmania.weatherproject.domain.models.WeatherInfoList
+import com.techmania.weatherproject.usecases.FetchLocationNameUseCase
 import com.techmania.weatherproject.usecases.FetchWeatherInfoUseCase
 import com.techmania.weatherproject.usecases.ObserveLocationInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,10 +25,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val fetchWeatherInfoUseCase: FetchWeatherInfoUseCase,
     private val observeLocationInfoUseCase: ObserveLocationInfoUseCase,
+    private val fetchLocationNameUseCase: FetchLocationNameUseCase,
 ) : ViewModel() {
 
     private val weatherInfoAll = MutableStateFlow<WeatherInfoList?>(null)
@@ -30,6 +38,12 @@ class MainScreenViewModel @Inject constructor(
     private val weatherInfoToday = MutableStateFlow<List<WeatherInfo>>(emptyList())
     private val weatherInfoTomorrow = MutableStateFlow<List<WeatherInfo>>(emptyList())
     private val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
+
+    var currentLocation = MutableStateFlow<LocationInfo?>(null)
+        private set
+    var selectedLocationName =
+        MutableStateFlow<LocationNameInfo>(WeatherInfoLogic.loadingLocationNameInfo)
+        private set
 
     var selectedBarState = MutableStateFlow<Int>(0)
         private set
@@ -68,9 +82,12 @@ class MainScreenViewModel @Inject constructor(
     private suspend fun fetchWeatherInfo() {
         viewModelScope.launch {
             try {
-                val locationInfo = observeLocationInfoUseCase()
+                currentLocation.value = observeLocationInfoUseCase()
                 weatherInfoAll.value =
-                    fetchWeatherInfoUseCase(locationInfo!!.latitude, locationInfo.longitude)
+                    fetchWeatherInfoUseCase(
+                        currentLocation.value!!.latitude,
+                        currentLocation.value!!.longitude
+                    )
             } catch (e: Exception) {
                 Log.d("weatherException", e.message.toString())
             }
@@ -116,5 +133,18 @@ class MainScreenViewModel @Inject constructor(
 
     private fun updateToggleChipState(active: Boolean) {
         selectedIsCurrentState.value = active
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun selectLocationNameFromCoordinates(context: Context) {
+        try {
+            selectedLocationName.value = fetchLocationNameUseCase(
+                currentLocation.value!!.latitude,
+                currentLocation.value!!.longitude,
+                context
+            )
+        } catch (e: Exception) {
+            Log.d("locationException", e.message.toString())
+        }
     }
 }

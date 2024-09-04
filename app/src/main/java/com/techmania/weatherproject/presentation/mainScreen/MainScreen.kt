@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +38,7 @@ import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents
 import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.SmallCardByDayRow
 import kotlinx.coroutines.launch
 
+//for testing
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(
@@ -68,8 +70,14 @@ fun MainScreen(
         val chipState = mainScreenViewModel.selectedIsCurrentState.collectAsState()
         val smallCardState = mainScreenViewModel.smallCardState.collectAsState()
 
-        LaunchedEffect(weatherInfoListToDisplay.value) {
-            mainScreenViewModel.scrollToSelectedWeatherInfo()
+        val currentLocation = mainScreenViewModel.currentLocation.collectAsState()
+        val SelectedLocationName = mainScreenViewModel.selectedLocationName.collectAsState()
+        val context = LocalContext.current
+
+        LaunchedEffect(currentLocation.value) {
+            if (currentLocation.value != null) {
+                mainScreenViewModel.selectLocationNameFromCoordinates(context = context)
+            }
         }
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(title = {}, navigationIcon = {
@@ -95,8 +103,8 @@ fun MainScreen(
                     weatherInfoCurrent = selectedWeatherInfoState.value
                         ?: WeatherInfoLogic.LoadingWeatherInfo,
                     //TODO: get location name
-                    city = "Budapest",
-                    country = "Hungary",
+                    city = SelectedLocationName.value.city,
+                    country = SelectedLocationName.value.country,
                     chipText = R.string.current_time,
                     toggleChipOnClick = {
                         mainScreenViewModel.resetSelectedWeatherInfo()
