@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.data.networking.Dto
+package com.techmania.weatherproject.data.networking.dto
 
 interface IWeatherInfoDto {
     val time: List<String>

@@ -45,17 +45,21 @@ fun MainScreen(
     mainScreenViewModel: MainScreenViewModel = hiltViewModel(),
     onNextSevenDaysClicked: () -> Unit,
 ) {
-    val coarseLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
-    val fineLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val coarseLocationPermissionState =
+        rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val fineLocationPermissionState =
+        rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     if (!fineLocationPermissionState.status.isGranted) {
         LaunchedEffect(fineLocationPermissionState.status) {
             fineLocationPermissionState.launchPermissionRequest()
         }
     }
-    LaunchedEffect(coarseLocationPermissionState.status.isGranted, fineLocationPermissionState.status.isGranted) {
+    LaunchedEffect(
+        coarseLocationPermissionState.status.isGranted, fineLocationPermissionState.status.isGranted
+    ) {
         if (coarseLocationPermissionState.status.isGranted || fineLocationPermissionState.status.isGranted) {
-                mainScreenViewModel.fetchWeatherAndScroll()
+            mainScreenViewModel.fetchWeatherAndScroll()
         }
     }
 

@@ -17,11 +17,13 @@ import com.techmania.weatherproject.usecases.FetchLocationNameUseCase
 import com.techmania.weatherproject.usecases.FetchWeatherInfoUseCase
 import com.techmania.weatherproject.usecases.ObserveLocationInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -83,11 +85,13 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 currentLocation.value = observeLocationInfoUseCase()
-                weatherInfoAll.value =
-                    fetchWeatherInfoUseCase(
-                        currentLocation.value!!.latitude,
-                        currentLocation.value!!.longitude
-                    )
+                withContext(Dispatchers.IO) {
+                    weatherInfoAll.value =
+                        fetchWeatherInfoUseCase(
+                            currentLocation.value!!.latitude,
+                            currentLocation.value!!.longitude
+                        )
+                }
             } catch (e: Exception) {
                 Log.d("weatherException", e.message.toString())
             }

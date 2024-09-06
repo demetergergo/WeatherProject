@@ -1,9 +1,7 @@
 package com.techmania.weatherproject.usecases
 
-import com.techmania.weatherproject.data.networking.Dto.IWeatherInfoDto
-import com.techmania.weatherproject.data.networking.Dto.WeatherInfoCurrentDto
-import com.techmania.weatherproject.data.networking.Dto.WeatherInfoDto
-import com.techmania.weatherproject.data.networking.OpenMeteoApi
+import com.techmania.weatherproject.data.Repository.WeatherRepository
+import com.techmania.weatherproject.data.sharedDataComponents.IWeatherInfo
 import com.techmania.weatherproject.domain.models.WeatherInfo
 import com.techmania.weatherproject.domain.models.WeatherInfoList
 import java.time.LocalDateTime
@@ -11,14 +9,13 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class FetchWeatherInfoUseCase @Inject constructor(
-    private val openMeteoApi: OpenMeteoApi,
+    private val weatherRepository: WeatherRepository,
 ) {
     suspend operator fun invoke(
         latitude: Double,
         longitude: Double,
     ): WeatherInfoList {
-        val weatherData = openMeteoApi.getWeatherData(latitude, longitude)
-        if (weatherData?.hourly != null) {
+        val weatherData = weatherRepository.getWeatherData(latitude, longitude)
             val hourly = weatherData.hourly
             val current = weatherData.current
             val daily = weatherData.daily
@@ -29,43 +26,38 @@ class FetchWeatherInfoUseCase @Inject constructor(
                 current = parseWeatherInfoSingle(current)
             )
             return weatherInfoList
-        } else {
-            throw Exception("Weather data is null")
-        }
     }
 
-    private fun parseWeatherInfo(dto: IWeatherInfoDto): List<WeatherInfo> {
+    private fun parseWeatherInfo(infoList: List<IWeatherInfo>): List<WeatherInfo> {
         val result = mutableListOf<WeatherInfo>()
-            for (i in dto.time.indices) {
+        infoList.map { info ->
                 result.add(
                     WeatherInfo(
-                        time = if(dto is WeatherInfoDto){
-                            DateTimeFormatter.ISO_DATE_TIME.parse(dto.time[i], LocalDateTime::from)
-                        } else{
-                            //ugly, but works
-                            DateTimeFormatter.ISO_DATE_TIME.parse("${dto.time[i]}T00:00", LocalDateTime::from)
-                        },
-                        temperature = dto.temperature_2m[i],
-                        apparentTemperature = dto.apparent_temperature[i],
-                        precipitation = dto.precipitation[i],
-                        weatherDesc = WeatherType.fromWMO(dto.weather_code[i]).weatherDesc,
-                        iconRes = WeatherType.fromWMO(dto.weather_code[i]).iconRes,
-                        windSpeed = dto.wind_speed_10m[i]
+                        time = DateTimeFormatter.ISO_DATE_TIME.parse(
+                            info.time,
+                            LocalDateTime::from
+                        ),
+                        temperature = info.temperature_2m,
+                        apparentTemperature = info.apparent_temperature,
+                        precipitation = info.precipitation,
+                        weatherDesc = WeatherType.fromWMO(info.weather_code).weatherDesc,
+                        iconRes = WeatherType.fromWMO(info.weather_code).iconRes,
+                        windSpeed = info.wind_speed_10m
                     )
                 )
             }
         return result
     }
 
-    private fun parseWeatherInfoSingle(dto: WeatherInfoCurrentDto): WeatherInfo {
+    private fun parseWeatherInfoSingle(info: IWeatherInfo): WeatherInfo {
         return WeatherInfo(
-            time = DateTimeFormatter.ISO_DATE_TIME.parse(dto.time, LocalDateTime::from),
-            temperature = dto.temperature_2m,
-            apparentTemperature = dto.apparent_temperature,
-            precipitation = dto.precipitation,
-            weatherDesc = WeatherType.fromWMO(dto.weather_code).weatherDesc,
-            iconRes = WeatherType.fromWMO(dto.weather_code).iconRes,
-            windSpeed = dto.wind_speed_10m
+            time = DateTimeFormatter.ISO_DATE_TIME.parse(info.time, LocalDateTime::from),
+            temperature = info.temperature_2m,
+            apparentTemperature = info.apparent_temperature,
+            precipitation = info.precipitation,
+            weatherDesc = WeatherType.fromWMO(info.weather_code).weatherDesc,
+            iconRes = WeatherType.fromWMO(info.weather_code).iconRes,
+            windSpeed = info.wind_speed_10m
         )
     }
 }

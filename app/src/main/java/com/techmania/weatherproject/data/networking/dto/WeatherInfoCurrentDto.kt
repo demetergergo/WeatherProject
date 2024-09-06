@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.data.networking.Dto
+package com.techmania.weatherproject.data.networking.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -10,5 +10,5 @@ data class WeatherInfoCurrentDto(
     @Json(name = "apparent_temperature") val apparent_temperature: Double,
     @Json(name = "precipitation") val precipitation: Double,
     @Json(name = "weather_code") val weather_code: Int,
-    @Json(name = "wind_speed_10m")val wind_speed_10m: Double,
+    @Json(name = "wind_speed_10m") val wind_speed_10m: Double,
 )

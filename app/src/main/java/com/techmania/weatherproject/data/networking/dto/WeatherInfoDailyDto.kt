@@ -1,10 +1,9 @@
-package com.techmania.weatherproject.data.networking.Dto
+package com.techmania.weatherproject.data.networking.dto
 
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-//not a list!!
 @JsonClass(generateAdapter = true)
 data class WeatherInfoDailyDto (
     @Json(name = "time") override val time: List<String>,

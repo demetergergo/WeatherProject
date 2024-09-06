@@ -82,6 +82,11 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.fragment.ktx)
 
+    //database
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
