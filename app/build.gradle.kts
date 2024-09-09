@@ -21,7 +21,9 @@ android {
             useSupportLibrary = true
         }
     }
-
+    androidResources {
+        generateLocaleConfig = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false

@@ -28,7 +28,10 @@ class WeatherRepository @Inject constructor(
         longitude: Double,
     ): IWeatherInfoList {
         val current: WeatherInfoCurrent? = weatherInfoCurrentDao.getAll()
-        if (current != null && current.time > LocalDateTime.now().minusMinutes(15).toString()) {
+        val hourly: List<WeatherInfo> = weatherInfoHourlyDao.getAll()
+        if (current != null && current.time > LocalDateTime.now().minusMinutes(15)
+                .toString() && hourly.size < 8
+        ) {
             return fromDatabase()
         } else {
             val weatherData = openMeteoApi.getWeatherData(latitude, longitude)

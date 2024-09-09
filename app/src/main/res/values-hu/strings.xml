@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Időjárás projekt</string>
+    <string name="today">Ma</string>
+    <string name="tomorrow">Holnap</string>
+    <string name="next7days">Hét</string>
+    <string name="rainfall">Csapadék</string>
+    <string name="wind">Szél</string>
+    <string name="apparent_temperature">Érzékelhető hőmérséklet</string>
+    <string name="current_time">Aktuális idő</string>
+    <string name="unit_cm">cm</string>
+    <string name="unit_kmh">Km/h</string>
+    <string name="unit_percentage">%</string>
+    <string name="unit_celsius">°C</string>
+    <string name="loading">…</string>
+
+    <string name="clear_sky">Tiszta égbolt</string>
+    <string name="mainly_clear">Derült</string>
+    <string name="partly_cloudy">Részben felhős</string>
+    <string name="overcast">Borult</string>
+    <string name="foggy">Ködös</string>
+    <string name="depositing_rime_fog">Zúzmarás köd</string>
+    <string name="light_drizzle">Szitálás</string>
+    <string name="moderate_drizzle">Enyhe eső</string>
+    <string name="dense_drizzle">Közepes eső</string>
+    <string name="light_freezing_drizzle">jeges szitálás</string>
+    <string name="dense_freezing_drizzle">jeges eső</string>
+    <string name="slight_rain">Kis eső</string>
+    <string name="moderate_rain">Mérsékelt eső</string>
+    <string name="heavy_rain">Heves eső</string>
+    <string name="heavy_freezing_rain">Heves ónos eső</string>
+    <string name="slight_snow_fall">Havazás</string>
+    <string name="moderate_snow_fall">Mérsékelt havazás</string>
+    <string name="heavy_snow_fall">Heves havazás</string>
+    <string name="snow_grains">Hózápor</string>
+    <string name="slight_rain_showers">Zápor</string>
+    <string name="moderate_rain_showers">Zivatar</string>
+    <string name="violent_rain_showers">Heves zivatar</string>
+    <string name="slight_snow_showers">Havas zápor</string>
+    <string name="heavy_snow_showers">Heves hózápor</string>
+    <string name="moderate_thunderstorm">Zivatar</string>
+    <string name="slight_hail_thunderstorm">Vihar jégesővel</string>
+    <string name="heavy_hail_thunderstorm">Heves vihar jégesővel</string>
+</resources>

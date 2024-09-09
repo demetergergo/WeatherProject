@@ -148,10 +148,10 @@ fun MainScreen(
                 SecondaryTabRow(selectedTabIndex = selectedBarState.value, modifier = Modifier) {
                     Tab(selected = selectedBarState.value == 0,
                         onClick = { mainScreenViewModel.updateSelectedBarState(0) },
-                        text = { Text(text = "Today") })
+                        text = { Text(text = stringResource(id = R.string.today)) })
                     Tab(selected = selectedBarState.value == 1,
                         onClick = { mainScreenViewModel.updateSelectedBarState(1) },
-                        text = { Text(text = "Tomorrow") })
+                        text = { Text(text = stringResource(id = R.string.tomorrow)) })
 
                     TextButton(
                         onClick = onNextSevenDaysClicked,
