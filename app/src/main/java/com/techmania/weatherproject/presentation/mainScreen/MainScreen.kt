@@ -128,7 +128,7 @@ fun MainScreen(
                         R.string.rainfall,
                         selectedWeatherInfoState.value?.precipitation
                             ?: WeatherInfoLogic.LoadingWeatherInfo.precipitation,
-                        R.string.unit_cm
+                        R.string.unit_mm
                     )
                     ClimateInfoCard(
                         R.drawable.wind_direction,

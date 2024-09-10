@@ -28,6 +28,7 @@ import com.techmania.weatherproject.R
 import com.techmania.weatherproject.presentation.forecastOverviewScreen.forecastOverviewScreenComponents.ExpandableCard
 import com.techmania.weatherproject.presentation.sharedComponents.ClimateInfoCardVertical
 import com.techmania.weatherproject.presentation.sharedComponents.ImageWithShadow
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +67,7 @@ fun ForecastOverViewScreen(
                 //refactor state outside of composable
                 ExpandableCard(overView = {
                     Text(
-                        text = weatherInfoSpecific.time.dayOfWeek.toString().lowercase()
+                        text = weatherInfoSpecific.time.format(DateTimeFormatter.ofPattern("EEEE"))
                             .replaceFirstChar { it.titlecase(Locale.getDefault()) },
                         modifier = Modifier.weight(3f)
                     )
@@ -97,7 +98,7 @@ fun ForecastOverViewScreen(
                             imageResourceId = R.drawable.rainy,
                             textResourceId = R.string.rainfall,
                             amount = weatherInfoDaily.value[index].precipitation,
-                            unitResourceId = R.string.unit_cm,
+                            unitResourceId = R.string.unit_mm,
                             modifier = Modifier
                         )
                         ClimateInfoCardVertical(

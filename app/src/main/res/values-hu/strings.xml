@@ -6,9 +6,9 @@
     <string name="next7days">Hét</string>
     <string name="rainfall">Csapadék</string>
     <string name="wind">Szél</string>
-    <string name="apparent_temperature">Érzékelhető hőmérséklet</string>
+    <string name="apparent_temperature">Hőérzet</string>
     <string name="current_time">Aktuális idő</string>
-    <string name="unit_cm">cm</string>
+    <string name="unit_mm">mm</string>
     <string name="unit_kmh">Km/h</string>
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>

@@ -1,5 +1,8 @@
 package com.techmania.weatherproject.data.Repository
 
+import androidx.room.Transaction
+import com.techmania.weatherproject.common.Constants.REFRESH_TIME
+import com.techmania.weatherproject.data.database.MyRoomDatabase
 import com.techmania.weatherproject.data.database.dao.WeatherInfoCurrentDao
 import com.techmania.weatherproject.data.database.dao.WeatherInfoDailyDao
 import com.techmania.weatherproject.data.database.dao.WeatherInfoHourlyDao
@@ -21,29 +24,28 @@ class WeatherRepository @Inject constructor(
     private val weatherInfoCurrentDao: WeatherInfoCurrentDao,
     private val weatherInfoHourlyDao: WeatherInfoHourlyDao,
     private val weatherInfoDailyDao: WeatherInfoDailyDao,
+    private val myRoomDatabase: MyRoomDatabase,
 ) {
+    @Transaction
     @Suppress("UNCHECKED_CAST")
     suspend fun getWeatherData(
         latitude: Double,
         longitude: Double,
     ): IWeatherInfoList {
         val current: WeatherInfoCurrent? = weatherInfoCurrentDao.getAll()
-        val hourly: List<WeatherInfo> = weatherInfoHourlyDao.getAll()
-        if (current != null && current.time > LocalDateTime.now().minusMinutes(15)
-                .toString() && hourly.size < 8
+        if (current != null && current.time > LocalDateTime.now().minusMinutes(REFRESH_TIME)
+                .toString()
         ) {
             return fromDatabase()
         } else {
+            myRoomDatabase.clearAllTables()
             val weatherData = openMeteoApi.getWeatherData(latitude, longitude)
             val parsedWeatherData = weatherData.toIWeatherInfoList()
-
-            weatherInfoCurrentDao.nukeAll()
-            weatherInfoHourlyDao.nukeAll()
-            weatherInfoDailyDao.nukeAll()
 
             weatherInfoCurrentDao.insertAll(parsedWeatherData.current as WeatherInfoCurrent)
             weatherInfoHourlyDao.insertAll(parsedWeatherData.hourly as List<WeatherInfo>)
             weatherInfoDailyDao.insertAll(parsedWeatherData.daily as List<WeatherInfoDaily>)
+
             return fromDatabase()
         }
     }
@@ -54,6 +56,12 @@ class WeatherRepository @Inject constructor(
             override val daily: List<IWeatherInfo> = weatherInfoDailyDao.getAll()
             override val hourly: List<IWeatherInfo> = weatherInfoHourlyDao.getAll()
         }
+    }
+
+    private fun nukeDatabase() {
+        weatherInfoCurrentDao.nukeAll()
+        weatherInfoHourlyDao.nukeAll()
+        weatherInfoDailyDao.nukeAll()
     }
 
     private fun WeatherInfoListDto.toIWeatherInfoList(): IWeatherInfoList {
@@ -72,7 +80,6 @@ class WeatherRepository @Inject constructor(
         return dto.time.indices.map { i ->
             if (dto is WeatherInfoDto) {
                 WeatherInfo(
-                    id = 0,
                     time = dto.time[i],
                     temperature_2m = dto.temperature_2m[i],
                     apparent_temperature = dto.apparent_temperature[i],
@@ -82,7 +89,6 @@ class WeatherRepository @Inject constructor(
                 )
             } else {
                 WeatherInfoDaily(
-                    id = 0,
                     time = "${dto.time[i]}T00:00",
                     temperature_2m = dto.temperature_2m[i],
                     apparent_temperature = dto.apparent_temperature[i],
@@ -96,7 +102,6 @@ class WeatherRepository @Inject constructor(
 
     private fun parseWeatherInfoSingle(dto: WeatherInfoCurrentDto): WeatherInfoCurrent {
         return WeatherInfoCurrent(
-            id = 0,
             time = dto.time,
             temperature_2m = dto.temperature_2m,
             apparent_temperature = dto.apparent_temperature,
