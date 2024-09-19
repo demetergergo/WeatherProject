@@ -17,7 +17,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ImageWithShadow(imageResource: Int, contentDescription: Int, shadowColor: Color ,padding: Dp, modifier: Modifier) {
+fun ImageWithShadow(
+    imageResource: Int,
+    contentDescription: Int,
+    shadowColor: Color = Color.Gray,
+    padding: Dp,
+    modifier: Modifier,
+) {
     Box(modifier = modifier) {
         Image(
             painter = painterResource(id = imageResource),
@@ -31,7 +37,9 @@ fun ImageWithShadow(imageResource: Int, contentDescription: Int, shadowColor: Co
         Image(
             painter = painterResource(id = imageResource),
             contentDescription = stringResource(contentDescription),
-            modifier = modifier.fillMaxSize().padding(padding)
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
         )
     }
 }

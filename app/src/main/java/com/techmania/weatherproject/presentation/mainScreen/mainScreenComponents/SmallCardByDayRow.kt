@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,7 +49,7 @@ fun SmallCardByDayRow(
                 icon = painterResource(weatherInfoSpecific.iconRes),
                 time = DateTimeFormatter.ofPattern("HH:mm").format(weatherInfoSpecific.time),
                 onClickCard =  {onClickCard(weatherInfoSpecific)},
-                cardColor = if(selectedCard?.time?.hour == weatherInfoSpecific.time.hour && selectedCard.time.dayOfMonth == weatherInfoSpecific.time.dayOfMonth) Color.DarkGray else Color.Transparent
+                cardColor = if (selectedCard?.time?.hour == weatherInfoSpecific.time.hour && selectedCard.time.dayOfMonth == weatherInfoSpecific.time.dayOfMonth) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
             )
         }
     }
@@ -68,7 +69,11 @@ fun SmallCard(temperature: Double, icon: Painter, time: String, onClickCard: () 
         Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment= Alignment.CenterHorizontally){
-                Text(time, textAlign = TextAlign.Center, modifier = Modifier.weight(1f).padding(top = 8.dp))
+            Text(
+                time, textAlign = TextAlign.Center, modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp)
+            )
                 Image(icon, contentDescription = "icon", modifier = Modifier.weight(1.5f))
                 Text("$temperature°", textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
         }

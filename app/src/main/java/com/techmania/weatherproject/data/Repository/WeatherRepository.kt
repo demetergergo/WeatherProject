@@ -58,12 +58,6 @@ class WeatherRepository @Inject constructor(
         }
     }
 
-    private fun nukeDatabase() {
-        weatherInfoCurrentDao.nukeAll()
-        weatherInfoHourlyDao.nukeAll()
-        weatherInfoDailyDao.nukeAll()
-    }
-
     private fun WeatherInfoListDto.toIWeatherInfoList(): IWeatherInfoList {
         val hourlyData = parseWeatherInfo(this.hourly)
         val currentData = parseWeatherInfoSingle(this.current)

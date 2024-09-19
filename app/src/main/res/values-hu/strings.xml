@@ -13,6 +13,8 @@
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
     <string name="loading">…</string>
+    <string name="settings">Beállítások</string>
+    <string name="language">Nyelv</string>
 
     <string name="clear_sky">Tiszta égbolt</string>
     <string name="mainly_clear">Derült</string>

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +43,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     mainScreenViewModel: MainScreenViewModel = hiltViewModel(),
     onNextSevenDaysClicked: () -> Unit,
+    onSettingsClicked: () -> Unit,
 ) {
     val coarseLocationPermissionState =
         rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -75,7 +75,7 @@ fun MainScreen(
         val smallCardState = mainScreenViewModel.smallCardState.collectAsState()
 
         val currentLocation = mainScreenViewModel.currentLocation.collectAsState()
-        val SelectedLocationName = mainScreenViewModel.selectedLocationName.collectAsState()
+        val selectedLocationName = mainScreenViewModel.selectedLocationName.collectAsState()
         val context = LocalContext.current
 
         LaunchedEffect(currentLocation.value) {
@@ -84,14 +84,8 @@ fun MainScreen(
             }
         }
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-            TopAppBar(title = {}, navigationIcon = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        imageVector = Icons.Default.Search, contentDescription = "Search"
-                    )
-                }
-            }, actions = {
-                IconButton(onClick = { /*TODO*/ }) {
+            TopAppBar(title = {}, actions = {
+                IconButton(onClick = onSettingsClicked) {
                     Icon(
                         imageVector = Icons.Default.Menu, contentDescription = "Menu"
                     )
@@ -107,8 +101,8 @@ fun MainScreen(
                     weatherInfoCurrent = selectedWeatherInfoState.value
                         ?: WeatherInfoLogic.LoadingWeatherInfo,
                     //TODO: get location name
-                    city = SelectedLocationName.value.city,
-                    country = SelectedLocationName.value.country,
+                    city = selectedLocationName.value.city,
+                    country = selectedLocationName.value.country,
                     chipText = R.string.current_time,
                     toggleChipOnClick = {
                         mainScreenViewModel.resetSelectedWeatherInfo()

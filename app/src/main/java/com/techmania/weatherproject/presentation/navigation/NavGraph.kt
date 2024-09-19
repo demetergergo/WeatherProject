@@ -6,18 +6,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.techmania.weatherproject.presentation.forecastOverviewScreen.ForecastOverViewScreen
 import com.techmania.weatherproject.presentation.mainScreen.MainScreen
+import com.techmania.weatherproject.presentation.settingsScreen.SettingsScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(navController = navController,
         startDestination = Screen.Main.route){
         composable(route = Screen.Main.route){
-            MainScreen(onNextSevenDaysClicked = {
-                navController.navigate(Screen.ForecastOverview.route)
-            })
+            MainScreen(
+                onNextSevenDaysClicked = { navController.navigate(Screen.ForecastOverview.route) },
+                onSettingsClicked = { navController.navigate(Screen.Settings.route) }
+            )
         }
         composable(route = Screen.ForecastOverview.route){
             ForecastOverViewScreen(onBackClicked = {navController.popBackStack()})
+        }
+        composable(route = Screen.Settings.route) {
+            SettingsScreen(onBackClicked = { navController.popBackStack() })
         }
     }
 }

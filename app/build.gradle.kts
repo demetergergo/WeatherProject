@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.retrofit.logging.interceptor)
     implementation(libs.play.services.location)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.appcompat)
     ksp(libs.moshi.codegen)
 
     //di
@@ -88,6 +89,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     testImplementation(libs.junit)
 

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -20,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,7 +81,7 @@ fun ForecastOverViewScreen(
                         contentDescription = weatherInfoSpecific.weatherDesc,
                         modifier = Modifier.weight(1.5f),
                         padding = 5.dp,
-                        shadowColor = Color.DarkGray
+                        shadowColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }, expandedState = cardStates.value[index], onClick = {
                     forecastOverViewScreenViewModel.updateCardState(index)

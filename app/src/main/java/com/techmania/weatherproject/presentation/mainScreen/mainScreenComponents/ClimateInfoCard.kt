@@ -43,7 +43,6 @@ fun ClimateInfoCard(
                 ImageWithShadow(
                     imageResource = imageResourceId,
                     contentDescription = textResourceId,
-                    shadowColor = Color.LightGray,
                     padding = 2.dp,
                     modifier = modifier.size(45.dp)
                 )
