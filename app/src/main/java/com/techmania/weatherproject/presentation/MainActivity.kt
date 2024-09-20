@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.techmania.weatherproject.data.dataStore.MyDataStore
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         MyDataStore.loadFlow("darkMode", this)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
         val isDarkMode = runBlocking {
             MyDataStore.ensureInitialized("darkMode", "true", this@MainActivity)
             preferences.first().toBoolean()

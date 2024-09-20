@@ -22,4 +22,5 @@
 
     <string name="en" translatable="false">English</string>
     <string name="hu" translatable="false">Magyar</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>

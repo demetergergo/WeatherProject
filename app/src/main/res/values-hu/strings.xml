@@ -43,4 +43,5 @@
     <string name="moderate_thunderstorm">Zivatar</string>
     <string name="slight_hail_thunderstorm">Vihar jégesővel</string>
     <string name="heavy_hail_thunderstorm">Heves vihar jégesővel</string>
+    <string name="dark_mode">Sötét mód</string>
 </resources>

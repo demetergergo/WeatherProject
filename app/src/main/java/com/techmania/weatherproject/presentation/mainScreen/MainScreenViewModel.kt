@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
@@ -46,6 +47,8 @@ class MainScreenViewModel @Inject constructor(
     var selectedLocationName =
         MutableStateFlow<LocationNameInfo>(WeatherInfoLogic.loadingLocationNameInfo)
         private set
+
+    var settingsButtonEnabled = mutableStateOf(true)
 
     var selectedBarState = MutableStateFlow<Int>(0)
         private set

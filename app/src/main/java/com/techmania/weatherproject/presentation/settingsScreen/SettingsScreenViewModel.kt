@@ -2,6 +2,7 @@ package com.techmania.weatherproject.presentation.settingsScreen
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.techmania.weatherproject.data.dataStore.MyDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor() : ViewModel() {
     var isDarkMode = MutableStateFlow<Boolean>(false)
+    var isBackButtonEnabled = mutableStateOf(true)
+    var showBottomSheet = mutableStateOf(false)
+
 
     suspend fun toggleTheme(context: Context) {
         MyDataStore.save("darkMode", (!isDarkMode.value).toString(), context)
