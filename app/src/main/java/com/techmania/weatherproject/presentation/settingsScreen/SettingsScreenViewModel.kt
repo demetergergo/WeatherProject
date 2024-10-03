@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.techmania.weatherproject.data.dataStore.MyDataStore
+import com.techmania.weatherproject.presentation.dataStore.MyDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject

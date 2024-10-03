@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
-import com.techmania.weatherproject.data.dataStore.MyDataStore
+import com.techmania.weatherproject.presentation.dataStore.MyDataStore
 import com.techmania.weatherproject.presentation.navigation.SetupNavGraph
 import com.techmania.weatherproject.presentation.ui.theme.WeatherProjectTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -50,7 +50,6 @@ fun MainScreen(
         rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
     val fineLocationPermissionState =
         rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    val settingsButtonEnabled = mainScreenViewModel.settingsButtonEnabled
 
     if (!fineLocationPermissionState.status.isGranted) {
         LaunchedEffect(fineLocationPermissionState.status) {
@@ -88,13 +87,11 @@ fun MainScreen(
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(title = {}, actions = {
                 IconButton(onClick = {
-                    settingsButtonEnabled.value = false
                     onSettingsClicked()
                     coroutineScope.launch {
                         delay(500)
-                        settingsButtonEnabled.value = true
                     }
-                }, enabled = settingsButtonEnabled.value) {
+                }) {
                     Icon(
                         imageVector = Icons.Default.Menu, contentDescription = "Menu"
                     )

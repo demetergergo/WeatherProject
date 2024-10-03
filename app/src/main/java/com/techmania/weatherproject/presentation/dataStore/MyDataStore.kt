@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.data.dataStore
+package com.techmania.weatherproject.presentation.dataStore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

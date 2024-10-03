@@ -19,10 +19,10 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         }
         composable(route = Screen.ForecastOverview.route){
-            ForecastOverViewScreen(onBackClicked = {navController.popBackStack()})
+            ForecastOverViewScreen(onBackClicked = { navController.navigateUp() })
         }
         composable(route = Screen.Settings.route) {
-            SettingsScreen(onBackClicked = { navController.popBackStack() })
+            SettingsScreen(onBackClicked = { navController.navigateUp() })
         }
     }
 }

@@ -45,7 +45,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val isDarkMode = settingsScreenViewModel.isDarkMode.collectAsState()
-    val isBackButtonEnabled = settingsScreenViewModel.isBackButtonEnabled
 
     val localeOptions = mapOf(
         R.string.en to "en",
@@ -64,8 +63,7 @@ fun SettingsScreen(
             navigationIcon = {
                 IconButton(onClick = {
                     onBackClicked()
-                    isBackButtonEnabled.value = false
-                }, enabled = isBackButtonEnabled.value) {
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
