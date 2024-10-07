@@ -1,6 +1,8 @@
 package com.techmania.weatherproject.presentation.mainScreen
 
 import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +40,7 @@ import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//for testing
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen(
@@ -46,22 +48,11 @@ fun MainScreen(
     onNextSevenDaysClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
 ) {
-    val coarseLocationPermissionState =
-        rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
-    val fineLocationPermissionState =
-        rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-
-    if (!fineLocationPermissionState.status.isGranted) {
-        LaunchedEffect(fineLocationPermissionState.status) {
-            fineLocationPermissionState.launchPermissionRequest()
-        }
-    }
+    LocationPermissions()
     LaunchedEffect(
-        coarseLocationPermissionState.status.isGranted, fineLocationPermissionState.status.isGranted
+        rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION).status.isGranted
     ) {
-        if (coarseLocationPermissionState.status.isGranted || fineLocationPermissionState.status.isGranted) {
-            mainScreenViewModel.fetchWeatherAndScroll()
-        }
+        mainScreenViewModel.fetchWeatherInfo()
     }
 
     Surface(
@@ -83,6 +74,9 @@ fun MainScreen(
             if (currentLocation.value != null) {
                 mainScreenViewModel.selectLocationNameFromCoordinates(context = context)
             }
+        }
+        LaunchedEffect(weatherInfoListToDisplay.value) {
+            mainScreenViewModel.scrollToSelectedWeatherInfo()
         }
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(title = {}, actions = {

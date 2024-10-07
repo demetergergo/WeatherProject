@@ -5,7 +5,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
@@ -48,8 +47,6 @@ class MainScreenViewModel @Inject constructor(
         MutableStateFlow<LocationNameInfo>(WeatherInfoLogic.loadingLocationNameInfo)
         private set
 
-    var settingsButtonEnabled = mutableStateOf(true)
-
     var selectedBarState = MutableStateFlow<Int>(0)
         private set
     var smallCardState = MutableStateFlow<LazyListState>(LazyListState())
@@ -70,21 +67,21 @@ class MainScreenViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
         private set
 
-    init {
-        fetchWeatherAndScroll()
-    }
+//    init {
+//        fetchWeatherAndScroll()
+//    }
+//
+//    fun fetchWeatherAndScroll() {
+//        viewModelScope.launch {
+//            fetchWeatherInfo()
+//        }.invokeOnCompletion {
+//            viewModelScope.launch {
+//                scrollToSelectedWeatherInfo()
+//            }
+//        }
+//    }
 
-    fun fetchWeatherAndScroll() {
-        viewModelScope.launch {
-            fetchWeatherInfo()
-        }.invokeOnCompletion {
-            viewModelScope.launch {
-                scrollToSelectedWeatherInfo()
-            }
-        }
-    }
-
-    private suspend fun fetchWeatherInfo() {
+    suspend fun fetchWeatherInfo() {
         viewModelScope.launch {
             try {
                 currentLocation.value = observeLocationInfoUseCase()
