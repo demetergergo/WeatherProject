@@ -17,6 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -41,6 +43,9 @@ fun ForecastOverViewScreen(
     val weatherInfoDaily = forecastOverViewScreenViewModel.weatherInfoDaily.collectAsState()
     val cardStates = forecastOverViewScreenViewModel.cardStates.collectAsState()
 
+    val refreshState = forecastOverViewScreenViewModel.refreshState.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
+
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             title = { Text(text = stringResource(id = R.string.next7days)) },
@@ -54,69 +59,76 @@ fun ForecastOverViewScreen(
             },
         )
     }) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 25.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        PullToRefreshBox(
+            modifier = Modifier.padding(innerPadding),
+            state = pullToRefreshState,
+            isRefreshing = refreshState.value,
+            onRefresh = {
+                forecastOverViewScreenViewModel.onPullRefresh()
+            },
         ) {
-            items(weatherInfoDaily.value.size) { index ->
-                val weatherInfoSpecific = weatherInfoDaily.value[index]
-                //refactor state outside of composable
-                ExpandableCard(overView = {
-                    Text(
-                        text = weatherInfoSpecific.time.format(DateTimeFormatter.ofPattern("EEEE"))
-                            .replaceFirstChar { it.titlecase(Locale.getDefault()) },
-                        modifier = Modifier.weight(3f)
-                    )
-                    Spacer(modifier = Modifier.weight(2f))
-                    Text(
-                        text = "${weatherInfoSpecific.apparentTemperature}°",
-                        modifier = Modifier.weight(1.5f)
-                    )
-                    ImageWithShadow(
-                        imageResource = weatherInfoSpecific.iconRes,
-                        contentDescription = weatherInfoSpecific.weatherDesc,
-                        modifier = Modifier.weight(1.5f),
-                        padding = 5.dp,
-                        shadowColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                }, expandedState = cardStates.value[index], onClick = {
-                    forecastOverViewScreenViewModel.updateCardState(index)
-                }, details = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        ClimateInfoCardVertical(
-                            imageResourceId = R.drawable.rainy,
-                            textResourceId = R.string.rainfall,
-                            amount = weatherInfoDaily.value[index].precipitation,
-                            unitResourceId = R.string.unit_mm,
-                            modifier = Modifier
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 25.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                items(weatherInfoDaily.value.size) { index ->
+                    val weatherInfoSpecific = weatherInfoDaily.value[index]
+                    ExpandableCard(overView = {
+                        Text(
+                            text = weatherInfoSpecific.time.format(DateTimeFormatter.ofPattern("EEEE"))
+                                .replaceFirstChar { it.titlecase(Locale.getDefault()) },
+                            modifier = Modifier.weight(3f)
                         )
-                        ClimateInfoCardVertical(
-                            imageResourceId = R.drawable.wind_direction,
-                            textResourceId = R.string.wind,
-                            amount = weatherInfoDaily.value[index].windSpeed,
-                            unitResourceId = R.string.unit_kmh,
-                            modifier = Modifier
+                        Spacer(modifier = Modifier.weight(2f))
+                        Text(
+                            text = "${weatherInfoSpecific.apparentTemperature}°",
+                            modifier = Modifier.weight(1.5f)
                         )
-                        ClimateInfoCardVertical(
-                            imageResourceId = R.drawable.sunset,
-                            textResourceId = R.string.apparent_temperature,
-                            amount = weatherInfoDaily.value[index].apparentTemperature,
-                            unitResourceId = R.string.unit_celsius,
-                            modifier = Modifier
+                        ImageWithShadow(
+                            imageResource = weatherInfoSpecific.iconRes,
+                            contentDescription = weatherInfoSpecific.weatherDesc,
+                            modifier = Modifier.weight(1.5f),
+                            padding = 5.dp,
+                            shadowColor = MaterialTheme.colorScheme.surfaceVariant
                         )
-                    }
-                })
+                    }, expandedState = cardStates.value[index], onClick = {
+                        forecastOverViewScreenViewModel.updateCardState(index)
+                    }, details = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            ClimateInfoCardVertical(
+                                imageResourceId = R.drawable.rainy,
+                                textResourceId = R.string.rainfall,
+                                amount = weatherInfoDaily.value[index].precipitation,
+                                unitResourceId = R.string.unit_mm,
+                                modifier = Modifier
+                            )
+                            ClimateInfoCardVertical(
+                                imageResourceId = R.drawable.wind_direction,
+                                textResourceId = R.string.wind,
+                                amount = weatherInfoDaily.value[index].windSpeed,
+                                unitResourceId = R.string.unit_kmh,
+                                modifier = Modifier
+                            )
+                            ClimateInfoCardVertical(
+                                imageResourceId = R.drawable.sunset,
+                                textResourceId = R.string.apparent_temperature,
+                                amount = weatherInfoDaily.value[index].apparentTemperature,
+                                unitResourceId = R.string.unit_celsius,
+                                modifier = Modifier
+                            )
+                        }
+                    })
+                }
             }
         }
     }

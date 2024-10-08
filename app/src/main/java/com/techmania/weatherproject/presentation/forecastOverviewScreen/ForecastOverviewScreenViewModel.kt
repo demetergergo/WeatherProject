@@ -10,6 +10,7 @@ import com.techmania.weatherproject.usecases.FetchWeatherInfoUseCase
 import com.techmania.weatherproject.usecases.ObserveLocationInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,6 +26,8 @@ class ForecastOverviewScreenViewModel @Inject constructor(
     val weatherInfoAll = MutableStateFlow<WeatherInfoList?>(null)
     val weatherInfoDaily = MutableStateFlow<List<WeatherInfo>>(emptyList())
     var cardStates = MutableStateFlow<List<Boolean>>(mutableListOf())
+        private set
+    var refreshState = MutableStateFlow<Boolean>(false)
         private set
 
     init {
@@ -62,4 +65,15 @@ class ForecastOverviewScreenViewModel @Inject constructor(
             }
         }
     }
+    fun onPullRefresh() {
+        viewModelScope.launch {
+            refreshState.value = true
+            fetchWeatherInfo()
+            //TODO: fix remove delay
+            delay(50)
+        }.invokeOnCompletion {
+            refreshState.value = false
+        }
+    }
+
 }

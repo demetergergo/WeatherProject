@@ -18,6 +18,7 @@ import com.techmania.weatherproject.usecases.FetchWeatherInfoUseCase
 import com.techmania.weatherproject.usecases.ObserveLocationInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -54,6 +55,8 @@ class MainScreenViewModel @Inject constructor(
     var selectedWeatherInfoState = MutableStateFlow<WeatherInfo?>(null)
         private set
     var selectedIsCurrentState = MutableStateFlow<Boolean>(true)
+        private set
+    var refreshState = MutableStateFlow<Boolean>(false)
         private set
 
     var weatherInfoListToDisplay = combine(
@@ -137,6 +140,17 @@ class MainScreenViewModel @Inject constructor(
 
     private fun updateToggleChipState(active: Boolean) {
         selectedIsCurrentState.value = active
+    }
+
+    fun onPullRefresh() {
+        viewModelScope.launch {
+            refreshState.value = true
+            fetchWeatherInfo()
+            //TODO: fix remove delay
+            delay(50)
+        }.invokeOnCompletion {
+            refreshState.value = false
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
