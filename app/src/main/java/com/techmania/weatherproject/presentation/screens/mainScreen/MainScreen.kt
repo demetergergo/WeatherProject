@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.mainScreen
+package com.techmania.weatherproject.presentation.screens.mainScreen
 
 import android.Manifest
 import android.os.Build
@@ -26,20 +26,23 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.techmania.weatherproject.R
 import com.techmania.weatherproject.domain.logic.WeatherInfoLogic
-import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.BigCurrentInfo
-import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.ClimateInfoCard
-import com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents.SmallCardByDayRow
+import com.techmania.weatherproject.presentation.permissions.LocationPermissions
+import com.techmania.weatherproject.presentation.screens.mainScreen.mainScreenComponents.BigCurrentInfo
+import com.techmania.weatherproject.presentation.screens.mainScreen.mainScreenComponents.ClimateInfoCard
+import com.techmania.weatherproject.presentation.screens.mainScreen.mainScreenComponents.SmallCardByDayRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -70,7 +73,7 @@ fun MainScreen(
         val chipState = mainScreenViewModel.selectedIsCurrentState.collectAsState()
         val smallCardState = mainScreenViewModel.smallCardState.collectAsState()
 
-        val refreshState = mainScreenViewModel.refreshState.collectAsState()
+        val refreshState by mainScreenViewModel.refreshState.collectAsStateWithLifecycle()
         val pullToRefreshState = rememberPullToRefreshState()
 
         val currentLocation = mainScreenViewModel.currentLocation.collectAsState()
@@ -102,7 +105,7 @@ fun MainScreen(
             PullToRefreshBox(
                 modifier = Modifier.padding(innerPadding),
                 state = pullToRefreshState,
-                isRefreshing = refreshState.value,
+                isRefreshing = refreshState,
                 onRefresh = {
                     mainScreenViewModel.onPullRefresh()
                 },

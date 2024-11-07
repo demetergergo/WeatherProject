@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.forecastOverviewScreen
+package com.techmania.weatherproject.presentation.screens.forecastOverviewScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

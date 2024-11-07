@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.forecastOverviewScreen
+package com.techmania.weatherproject.presentation.screens.forecastOverviewScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.techmania.weatherproject.R
-import com.techmania.weatherproject.presentation.forecastOverviewScreen.forecastOverviewScreenComponents.ExpandableCard
 import com.techmania.weatherproject.presentation.sharedComponents.ClimateInfoCardVertical
+import com.techmania.weatherproject.presentation.sharedComponents.ExpandableCard
 import com.techmania.weatherproject.presentation.sharedComponents.ImageWithShadow
 import java.time.format.DateTimeFormatter
 import java.util.Locale

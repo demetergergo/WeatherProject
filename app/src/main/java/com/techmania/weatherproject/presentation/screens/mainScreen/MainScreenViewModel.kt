@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.mainScreen
+package com.techmania.weatherproject.presentation.screens.mainScreen
 
 import android.content.Context
 import android.os.Build
@@ -69,20 +69,6 @@ class MainScreenViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
         private set
-
-//    init {
-//        fetchWeatherAndScroll()
-//    }
-//
-//    fun fetchWeatherAndScroll() {
-//        viewModelScope.launch {
-//            fetchWeatherInfo()
-//        }.invokeOnCompletion {
-//            viewModelScope.launch {
-//                scrollToSelectedWeatherInfo()
-//            }
-//        }
-//    }
 
     suspend fun fetchWeatherInfo() {
         viewModelScope.launch {

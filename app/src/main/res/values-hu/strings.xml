@@ -45,7 +45,12 @@
     <string name="heavy_hail_thunderstorm">Heves vihar jégesővel</string>
     <string name="dark_mode">Sötét mód</string>
     <string name="location_permission_required">Helymeghatározási engedély szükséges</string>
+    <string name="permission_required">Engedély szükséges</string>
     <string name="location_permission_denied">A helymeghatározási engedély megtagadva. Engedélyezd az alkalmazás beállításaiban.</string>
+    <string name="permission_denied">Engedély megtagadva. Engedélyezd az alkalmazás beállításaiban.</string>
     <string name="open_settings">Beállítások</string>
     <string name="cancel">Mégsem</string>
+
+    <string name="notifications">Értesítések</string>
+    <string name="ok">Rendben</string>
 </resources>

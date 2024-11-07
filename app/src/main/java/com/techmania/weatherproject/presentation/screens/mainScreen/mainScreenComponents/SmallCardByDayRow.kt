@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.mainScreen.mainScreenComponents
+package com.techmania.weatherproject.presentation.screens.mainScreen.mainScreenComponents
 
 
 import androidx.compose.foundation.Image

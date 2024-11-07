@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.forecastOverviewScreen.forecastOverviewScreenComponents
+package com.techmania.weatherproject.presentation.sharedComponents
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -29,23 +29,30 @@ fun ExpandableCard(expandedState: Boolean = false, onClick: () -> Unit, overView
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f
     )
-    Card(modifier = Modifier.fillMaxWidth().padding(5.dp).animateContentSize (
-        animationSpec = tween(
-            durationMillis = 100,
-            easing = LinearOutSlowInEasing
-        )
-    ),
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 100,
+                    easing = LinearOutSlowInEasing
+                )
+            ),
         onClick = {onClick()}) {
         Column(modifier = Modifier.fillMaxWidth()){
-            Row(modifier = Modifier.fillMaxWidth()
-                .height(80.dp)
-                .padding(10.dp),verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .padding(10.dp),verticalAlignment = Alignment.CenterVertically) {
                 overView()
                 Icon(
                     modifier = Modifier
                         .weight(1f)
                         .alpha(ContentAlpha.medium)
-                        .rotate(rotationState).height(20.dp),
+                        .rotate(rotationState)
+                        .height(20.dp),
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Drop-Down Arrow"
                 )

@@ -1,4 +1,4 @@
-package com.techmania.weatherproject.presentation.settingsScreen.settingsScreenComponents
+package com.techmania.weatherproject.presentation.screens.settingsScreen.settingsScreenComponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

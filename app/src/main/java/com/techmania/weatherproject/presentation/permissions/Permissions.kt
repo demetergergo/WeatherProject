@@ -1,6 +1,5 @@
-package com.techmania.weatherproject.presentation.mainScreen
+package com.techmania.weatherproject.presentation.permissions
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -25,21 +24,18 @@ import com.techmania.weatherproject.R
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocationPermissions() {
+fun RequestSpecificPermission(permission: String) {
     var showDialogState by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val coarseLocationPermissionState = rememberPermissionState(
-        Manifest.permission.ACCESS_COARSE_LOCATION
+    val permissionState = rememberPermissionState(
+        permission
     )
-    val fineLocationPermissionState = rememberPermissionState(
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
-    if (!coarseLocationPermissionState.status.isGranted) {
+    if (!permissionState.status.isGranted) {
         LaunchedEffect(Unit) {
-            fineLocationPermissionState.launchPermissionRequest()
+            permissionState.launchPermissionRequest()
         }
-        LaunchedEffect(coarseLocationPermissionState.status) {
-            if (coarseLocationPermissionState.status.shouldShowRationale
+        LaunchedEffect(permissionState.status) {
+            if (permissionState.status.shouldShowRationale
             ) {
                 showDialogState = true
             }
@@ -51,8 +47,8 @@ fun LocationPermissions() {
                     dismissOnClickOutside = true
                 ),
                 onDismissRequest = { showDialogState = false },
-                title = { Text(stringResource(R.string.location_permission_required)) },
-                text = { Text(stringResource(R.string.location_permission_denied)) },
+                title = { Text(stringResource(R.string.permission_required)) },
+                text = { Text(stringResource(R.string.permission_denied)) },
                 confirmButton = {
                     Button(onClick = {
                         navigateToAppDetails(context)
@@ -71,7 +67,7 @@ fun LocationPermissions() {
     }
 }
 
-private fun navigateToAppDetails(context: Context) {
+fun navigateToAppDetails(context: Context) {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
     val uri = Uri.fromParts("package", context.packageName, null)
     intent.data = uri
