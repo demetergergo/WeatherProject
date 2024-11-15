@@ -118,7 +118,6 @@ fun MainScreen(
                         BigCurrentInfo(
                             weatherInfoCurrent = selectedWeatherInfoState.value
                                 ?: WeatherInfoLogic.LoadingWeatherInfo,
-                            //TODO: get location name
                             city = selectedLocationName.value.city,
                             country = selectedLocationName.value.country,
                             chipText = R.string.current_time,

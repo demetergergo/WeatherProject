@@ -1,7 +1,6 @@
 package com.techmania.weatherproject.presentation.screens.settingsScreen
 
 import android.content.Context
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.techmania.weatherproject.domain.models.AlarmItem
@@ -18,21 +17,18 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SettingsScreenViewModel @Inject constructor() : ViewModel() {
+class SettingsScreenViewModel @Inject constructor(
+) : ViewModel() {
     var isDarkMode = MutableStateFlow<Boolean>(false)
-    var isBackButtonEnabled = mutableStateOf(true)
     var showBottomSheet = mutableStateOf(false)
 
-    //todo: implement permission handling
-    val hasNotificationPermission = mutableStateOf(false)
+    val permissionDialogs = MutableStateFlow<Boolean>(false)
     var notificationSwitchState = MutableStateFlow<Boolean>(false)
     var calendarState = mutableStateOf(false)
 
     val currentTime = Calendar.getInstance()
 
-    var secondsText = mutableStateOf("")
-    val alarmItem = mutableStateOf<AlarmItem?>(null)
-
+    var savedAlarmTime = MutableStateFlow<String>("--")
 
 
     suspend fun toggleTheme(context: Context) {
@@ -43,31 +39,52 @@ class SettingsScreenViewModel @Inject constructor() : ViewModel() {
     suspend fun loadSettings(context: Context) {
         isDarkMode.value = MyDataStore.load("darkMode", context).toBoolean()
         notificationSwitchState.value = MyDataStore.load("notifications", context).toBoolean()
+        savedAlarmTime.value = MyDataStore.load("alarmTime", context) ?: "--"
     }
 
     fun toggleCalendarState() {
         calendarState.value = !calendarState.value
     }
 
-    suspend fun toggleNotificationSwitchState(context: Context) {
+    suspend fun toggleNotificationSwitchState(context: Context, scheduler: AlarmScheduler) {
+        toggleNotificationSwitchState(context)
+        if (!notificationSwitchState.value) {
+            scheduler.cancelAllAlarms()
+            savedAlarmTime.value = "-"
+            saveAlarmTime(savedAlarmTime.value, context)
+        }
+    }
+
+    private suspend fun toggleNotificationSwitchState(context: Context) {
         MyDataStore.save("notifications", (!notificationSwitchState.value).toString(), context)
         notificationSwitchState.value = MyDataStore.load("notifications", context).toBoolean()
     }
 
-    fun confirmAlarm(
-        secondsText: MutableState<String>,
+    fun togglePermissionDialogs() {
+        permissionDialogs.value = !permissionDialogs.value
+    }
+
+    suspend fun confirmAlarm(
         hour: Int,
         minute: Int,
         scheduler: AlarmScheduler,
+        context: Context,
     ) {
-        secondsText.value = LocalTime.of(hour, minute).toString()
-        alarmItem.value = AlarmItem(
-            time = LocalDateTime.of(
-                LocalDate.now(),
-                LocalTime.parse(secondsText.value, DateTimeFormatter.ofPattern("HH:mm"))
-            ), message = "mock message",
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        val alarmTime = LocalDateTime.of(
+            LocalDate.now(),
+            LocalTime.parse(LocalTime.of(hour, minute).toString(), timeFormatter)
+        )
+        saveAlarmTime(timeFormatter.format(alarmTime), context)
+        val alarmItem = AlarmItem(
+            time = alarmTime, message = "mock message",
             title = "mock title"
         )
-        alarmItem.value!!.let(scheduler::schedule)
+        alarmItem.let(scheduler::schedule)
+    }
+
+    private suspend fun saveAlarmTime(alarmTime: String, context: Context) {
+        MyDataStore.save("alarmTime", alarmTime, context)
+        savedAlarmTime.value = alarmTime
     }
 }

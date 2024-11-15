@@ -27,10 +27,17 @@
     <string name="permission_required">Permission Required</string>
     <string name="location_permission_denied">Location permission is denied. You need to enable it from app settings.</string>
     <string name="permission_denied">Permission is denied. You need to enable it from app settings.</string>
+    <string name="Background_location_permission_denied">Background location permission is denied. You need to set the location access permission to "Allow all the time" from app settings.</string>
     <string name="open_settings">Open Settings</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
 
     <string name="notifications">Notifications</string>
+    <string name="current_temperature">Current temperature: </string>
+    <string name="current_weather">Current Weather: </string>
+    <string name="selected_time">Selected time: </string>
+    <string name="set_time">Set time</string>
+    <string name="daily_notification">Daily notification</string>
+
 
 </resources>

@@ -42,6 +42,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.techmania.weatherproject.R
 import com.techmania.weatherproject.domain.models.AlarmScheduler
 import com.techmania.weatherproject.presentation.alarmManager.AndroidAlarmScheduler
+import com.techmania.weatherproject.presentation.permissions.RequestSpecificPermission
+import com.techmania.weatherproject.presentation.permissions.navigateToAppDetails
 import com.techmania.weatherproject.presentation.screens.settingsScreen.settingsScreenComponents.SettingsItem
 import com.techmania.weatherproject.presentation.screens.settingsScreen.settingsScreenComponents.TimePickerDialog
 import com.techmania.weatherproject.presentation.sharedComponents.ExpandableCard
@@ -62,12 +64,15 @@ fun SettingsScreen(
     val isDarkMode = settingsScreenViewModel.isDarkMode.collectAsState()
     val currentTime = settingsScreenViewModel.currentTime
     val calendarState = settingsScreenViewModel.calendarState
-    val alarmItem = settingsScreenViewModel.alarmItem
-    val secondsText = settingsScreenViewModel.secondsText
+    val savedAlarmTime = settingsScreenViewModel.savedAlarmTime.collectAsState()
     val notificationSwitchState = settingsScreenViewModel.notificationSwitchState.collectAsState()
-    val hasNotificationPermission = settingsScreenViewModel.hasNotificationPermission
+    val permissionDialogs = settingsScreenViewModel.permissionDialogs.collectAsState()
+
     val postNotificationPermissionState = rememberPermissionState(
         Manifest.permission.POST_NOTIFICATIONS
+    )
+    val backgroundLocationPermissionState = rememberPermissionState(
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION
     )
 
     val timePickerState = rememberTimePickerState(
@@ -76,7 +81,6 @@ fun SettingsScreen(
         is24Hour = true,
     )
     val scheduler: AlarmScheduler = AndroidAlarmScheduler(context)
-    //end
 
     val localeOptions = mapOf(
         R.string.en to "en",
@@ -88,9 +92,6 @@ fun SettingsScreen(
 
     LaunchedEffect(Unit) {
         settingsScreenViewModel.loadSettings(context)
-    }
-    LaunchedEffect(postNotificationPermissionState.status) {
-        hasNotificationPermission.value = postNotificationPermissionState.status.isGranted
     }
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
@@ -114,7 +115,9 @@ fun SettingsScreen(
             ) {
                 TimePickerDialog(
                     onConfirm = { hour, minute ->
-                        settingsScreenViewModel.confirmAlarm(secondsText, hour, minute, scheduler)
+                        coroutineScope.launch {
+                            settingsScreenViewModel.confirmAlarm(hour, minute, scheduler, context)
+                        }
                     },
                     onDismiss = { settingsScreenViewModel.toggleCalendarState() },
                     timePickerState = timePickerState,
@@ -154,49 +157,60 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsItem(settingsTextResource = R.string.dark_mode, settingChanger = {
+            SettingsItem(settingsText = stringResource(R.string.dark_mode), settingChanger = {
                 Switch(checked = isDarkMode.value, onCheckedChange = {
                     coroutineScope.launch {
                         settingsScreenViewModel.toggleTheme(context)
                     }
                 }, modifier = Modifier)
             })
-            SettingsItem(settingsTextResource = R.string.language, settingChanger = {
+            SettingsItem(settingsText = stringResource(R.string.language), settingChanger = {
                 Button(onClick = { showBottomSheet.value = !showBottomSheet.value }) {
                     Text(text = Locale.getDefault().displayLanguage)
                 }
             })
-            ExpandableCard(
-                expandedState = notificationSwitchState.value,
-                onClick = { /*TODO*/ },
-                overView = {
-                    SettingsItem(settingsTextResource = R.string.notifications, settingChanger = {
+            ExpandableCard(expandedState = notificationSwitchState.value, onClick = {}, overView = {
+                SettingsItem(
+                    settingsText = stringResource(R.string.notifications),
+                    settingChanger = {
                         Switch(checked = notificationSwitchState.value, onCheckedChange = {
+                            settingsScreenViewModel.togglePermissionDialogs()
+
+                            if (postNotificationPermissionState.status.isGranted) {
                             coroutineScope.launch {
-                                settingsScreenViewModel.toggleNotificationSwitchState(context)
+                                settingsScreenViewModel.toggleNotificationSwitchState(
+                                    context, scheduler
+                                )
+                            }
                             }
                         })
                     })
-                },
-                details = {
-                    if (hasNotificationPermission.value) {
-                        SettingsItem(
-                            settingsTextResource = R.string.notifications,
-                            settingChanger = {
-                                Button(onClick = { settingsScreenViewModel.toggleCalendarState() }) {
-                                    Text(text = stringResource(id = R.string.notifications))
-                                }
-                            })
-                    } else {
-                        Text(
-                            text = stringResource(id = R.string.permission_denied),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                        )
-                    }
-                })
+            }, details = {
+                if (backgroundLocationPermissionState.status.isGranted) {
+                    SettingsItem(
+                        stringResource(R.string.selected_time) + savedAlarmTime.value,
+                        settingChanger = {
+                            Button(onClick = { settingsScreenViewModel.toggleCalendarState() }) {
+                                Text(text = stringResource(id = R.string.set_time))
+                            }
+                        })
+                } else {
+                    SettingsItem(
+                        settingsText = stringResource(R.string.Background_location_permission_denied),
+                        settingChanger = {
+                            Button(onClick = { navigateToAppDetails(context) }) {
+                                Text(text = stringResource(id = R.string.settings))
+                            }
+                        })
+                }
+            })
         }
+    }
+    if (permissionDialogs.value) {
+        if (!postNotificationPermissionState.status.isGranted) {
+            RequestSpecificPermission(permission = Manifest.permission.POST_NOTIFICATIONS)
+        }
+        settingsScreenViewModel.togglePermissionDialogs()
     }
 }
 

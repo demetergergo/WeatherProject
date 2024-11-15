@@ -6,10 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        tools:targetApi="31" />
-
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!--
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" tools:targetApi="31" />
+    -->
     <application
         android:name=".CustomApplication"
         android:allowBackup="false"
@@ -24,6 +24,7 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
+            android:foregroundServiceType="location"
             android:theme="@style/Theme.WeatherProject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

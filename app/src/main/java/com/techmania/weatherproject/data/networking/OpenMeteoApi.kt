@@ -1,6 +1,7 @@
 package com.techmania.weatherproject.data.networking
 
 import com.techmania.weatherproject.data.networking.dto.WeatherInfoListDto
+import com.techmania.weatherproject.data.networking.dto.WeatherInfoNotificationDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,4 +11,10 @@ interface OpenMeteoApi {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
     ): WeatherInfoListDto
+
+    @GET("v1/forecast?current=temperature_2m,weather_code")
+    suspend fun getWeatherDataNotification(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+    ): WeatherInfoNotificationDto
 }
